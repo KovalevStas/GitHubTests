@@ -14,6 +14,8 @@ import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
+import static test.NamedBy.css;
+import static test.NamedBy.named;
 
 
 @Owner("KovalevStanislav")
@@ -80,6 +82,7 @@ public class GitHubTests {
                 .savePageSource(true)
                 .screenshots(true));
     }
+
     @DisplayName("Создание Issue через без Steps")
     @Test
     public void creatingIssueTestWithListener() {
@@ -102,6 +105,30 @@ public class GitHubTests {
             $("div.js-issue-row a").shouldHave(text(title));
 
     }
+
+    @DisplayName("Создание Issue через без Steps с NamedBy")
+    @Test
+    public void creatingIssueTestWithNamedBy() {
+        link("GitHub", base_url);
+        link("Список задач", issues_link);
+
+        open(base_url);
+
+        $(named(byText("Sign in")).as("Кнопка авторизации")).click();
+        $(css("#login_field").as("Поле логина")).setValue(login);
+        $(css("#password").as("Поле пароля")).setValue(password).pressEnter();
+
+        open(issues_link);
+        $(named(by("data-hotkey", "c")).as("Кнопка создания Issue")).click();
+        $(css("#issue_title").as("Поле заголовка задачи")).setValue(title);
+        $(css("#issue_body").as("Поле тела задачи")).setValue(body);
+        $(named(withText("Submit new issue")).as("Кнопка подтверждения создания")).click();
+
+        $(named(by("data-tab-item", "issues-tab")).as("Вкладка Issue")).click();
+        $(css("div.js-issue-row a").as("Первая задача в списке задач")).shouldHave(text(title));
+
+    }
+
     @AfterEach
     public void closeBrowser (){
         closeWebDriver();
