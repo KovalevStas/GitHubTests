@@ -1,8 +1,11 @@
 package test;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -62,9 +65,6 @@ public class GitHubTests {
     @DisplayName("Создание Issue через UI с BasicSteps")
     @Test
     public void creatingIssueTestWithBasicSteps() {
-        link("GitHub", base_url);
-        link("Список задач", issues_link);
-
         BasicSteps steps = new BasicSteps();
         steps.openSite(base_url);
         steps.autorise(login,password);
@@ -73,6 +73,35 @@ public class GitHubTests {
         steps.assertAddIssue(title);
     }
 
+
+    @BeforeEach
+    public void initLogger(){
+        SelenideLogger.addListener("allure", new AllureSelenide()
+                .savePageSource(true)
+                .screenshots(true));
+    }
+    @DisplayName("Создание Issue через без Steps")
+    @Test
+    public void creatingIssueTestWithListener() {
+        link("GitHub", base_url);
+        link("Список задач", issues_link);
+
+            open(base_url);
+
+            $(byText("Sign in")).click();
+            $("#login_field").setValue(login);
+            $("#password").setValue(password).pressEnter();
+
+            open(issues_link);
+            $(by("data-hotkey", "c")).click();
+            $("#issue_title").setValue(title);
+            $("#issue_body").setValue(body);
+            $(withText("Submit new issue")).click();
+
+            $(by("data-tab-item", "issues-tab")).click();
+            $("div.js-issue-row a").shouldHave(text(title));
+
+    }
     @AfterEach
     public void closeBrowser (){
         closeWebDriver();

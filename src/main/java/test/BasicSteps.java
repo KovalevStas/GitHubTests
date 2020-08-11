@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static io.qameta.allure.Allure.link;
 
 public class BasicSteps {
 
@@ -14,6 +15,7 @@ public class BasicSteps {
 
     @Step("Открываем главную страницу")
     public void openSite(String url) {
+        link("Используемая ссылка", url);
         open(url);
     }
 
