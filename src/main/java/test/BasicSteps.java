@@ -1,6 +1,7 @@
 package test;
 
 import io.qameta.allure.Step;
+import org.junit.jupiter.api.Assertions;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.*;
@@ -27,17 +28,32 @@ public class BasicSteps {
     }
 
     @Step("Создаем новую Issue")
-    public void createIssue(String title, String body) {
-
+    public int createIssue(String title, String body) {
         $(by("data-hotkey", "c")).click();
         $("#issue_title").setValue(title);
         $("#issue_body").setValue(body);
+        $(withText("Assignees")).click();
+        $("div[data-filterable-for = 'assignee-filter-field'] label.select-menu-item").click();
+        $(withText("Assignees")).click();
+        $(".label-select-menu").click();
+        $(byText("bug")).click();
+        $(byText("invalid")).click();
+        $(".label-select-menu").click();
         $(withText("Submit new issue")).click();
+        return Integer.parseInt($(".gh-header-title span", 1).getText().replace("#", ""));
+    }
+
+    @Step("Загружаем созданную задачу через API")
+    public Issue getIssueFromGithub(int number) {
+        ApiSteps api = new ApiSteps();
+        return api.getIssue(number);
     }
 
     @Step("Проверяем наличие новой Issue")
-    public void assertAddIssue(String title) {
-        $(by("data-tab-item", "issues-tab")).click();
-        $("div.js-issue-row a").shouldHave(text(title));
+    public void assertAddIssue(Issue issue, String title, String assignee) {
+        Assertions.assertEquals(issue.getTitle(), title);
+        Assertions.assertEquals(issue.getAssignee().getLogin(),assignee);
+        Assertions.assertEquals(issue.getLabels().get(0).getName(),"bug");
+        Assertions.assertEquals(issue.getLabels().get(1).getName(),"invalid");
     }
 }
