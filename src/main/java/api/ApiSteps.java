@@ -1,20 +1,24 @@
-package test;
+package api;
 
+import models.Issue;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 
+import static config.Config.config;
 import static io.restassured.RestAssured.given;
 
 public class ApiSteps {
 
     @Step("Создаем задачу с заданным заголовком")
-    public Issue createIssue(String title) {
+    public Issue createIssue(String title, String body) {
         final Issue toCreate = new Issue();
         toCreate.setTitle(title);
+        toCreate.setBody(body);
+
         return given()
                 .filter(new AllureRestAssured())
                 .baseUri("https://api.github.com")
-                .header("Authorization", "token 06a332d8e52818bf4c55c4d3338555e6da1ad5b1")
+                .header("Authorization", "token " + config().getToken())
                 .body(toCreate)
                 .when()
                 .post("/repos/test-pikabu/test_repo/issues")
@@ -29,7 +33,7 @@ public class ApiSteps {
         return given()
                 .filter(new AllureRestAssured())
                 .baseUri("https://api.github.com")
-                .header("Authorization", "token 06a332d8e52818bf4c55c4d3338555e6da1ad5b1")
+                .header("Authorization", "token " + config().getToken())
                 .when()
                 .get("/repos/test-pikabu/test_repo/issues/" + number)
                 .then()

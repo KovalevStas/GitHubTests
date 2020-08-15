@@ -1,5 +1,7 @@
 package test;
 
+import api.ApiSteps;
+import models.Issue;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
@@ -8,21 +10,22 @@ import org.junit.jupiter.api.*;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
+import static config.Config.config;
 import static io.qameta.allure.Allure.link;
-import static test.NamedBy.css;
-import static test.NamedBy.named;
+import static helpers.NamedBy.css;
+import static helpers.NamedBy.named;
 
 @Owner("KovalevStanislav")
 @Feature("Тесты GitHub на чистом Selenide и Rest API")
 public class ListenerGitHubTest {
 
     final static String
-            login = "test-pikabu",
-            password = "pikabu1234",
-            base_url = "https://github.com",
-            issues_link = String.format("%s/test-pikabu/test_repo/issues", base_url),
-            title = "test_title",
-            body = "test_body";
+            login = config().getLogin(),
+            password = config().getPassword(),
+            base_url = config().getLoginFormUrl(),
+            issues_link = config().getLoginFormUrl() + config().getRepository(),
+            title = config().getTitle(),
+            body = config().getBody();
     private int number;
     private Issue issue = new Issue();
     private final ApiSteps api = new ApiSteps();

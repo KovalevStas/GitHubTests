@@ -1,16 +1,19 @@
 package test;
 
+import api.ApiSteps;
+import models.Issue;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
+import static config.Config.config;
 
 
 @Owner("KovalevStanislav")
@@ -18,12 +21,12 @@ import static io.qameta.allure.Allure.step;
 public class LambdaGitHubTests {
 
     final static String
-            login = "test-pikabu",
-            password = "pikabu1234",
-            base_url = "https://github.com",
-            issues_link = String.format("%s/test-pikabu/test_repo/issues", base_url),
-            title = "test_title",
-            body = "test_body";
+            login = config().getLogin(),
+            password = config().getPassword(),
+            base_url = config().getLoginFormUrl(),
+            issues_link = config().getLoginFormUrl() + config().getRepository(),
+            title = config().getTitle(),
+            body = config().getBody();
     private int number;
     private Issue issue = new Issue();
     private final ApiSteps api = new ApiSteps();
@@ -83,5 +86,10 @@ public class LambdaGitHubTests {
             Assertions.assertEquals(issue.getLabels().get(0).getName(),"bug");
             Assertions.assertEquals(issue.getLabels().get(1).getName(),"invalid");
         });
+    }
+
+    @AfterEach
+    public void closeBrowser() {
+        closeWebDriver();
     }
 }

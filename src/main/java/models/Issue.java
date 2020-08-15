@@ -1,4 +1,4 @@
-package test;
+package models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,6 +10,7 @@ import java.util.List;
 public class Issue implements Serializable {
 private int number;
 private String title;
+private String body;
 private Assignee assignee;
 private List <Label> labels = new LinkedList<>();
 
@@ -43,5 +44,13 @@ private List <Label> labels = new LinkedList<>();
 
     public void setLabels(List<Label> labels) {
         this.labels = labels;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

@@ -1,21 +1,27 @@
 package test;
 
+import models.Issue;
+import helpers.BasicSteps;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static config.Config.config;
 
 @Owner("KovalevStanislav")
 @Feature("Тесты GitHub с использованием Steps класса")
 public class StepGitHubTest {
 
     final static String
-            login = "test-pikabu",
-            password = "pikabu1234",
-            base_url = "https://github.com",
-            issues_link = String.format("%s/test-pikabu/test_repo/issues", base_url),
-            title = "test_title",
-            body = "test_body";
+            login = config().getLogin(),
+            password = config().getPassword(),
+            base_url = config().getLoginFormUrl(),
+            issues_link = config().getLoginFormUrl() + config().getRepository(),
+            title = config().getTitle(),
+            body = config().getBody();
     private int number;
     private Issue issue = new Issue();
 
@@ -29,5 +35,10 @@ public class StepGitHubTest {
         number = steps.createIssue(title,body);
         issue = steps.getIssueFromGithub(number);
         steps.assertAddIssue(issue,title,login);
+    }
+
+    @AfterEach
+    public void closeBrowser() {
+        closeWebDriver();
     }
 }
