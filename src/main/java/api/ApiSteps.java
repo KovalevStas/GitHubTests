@@ -1,13 +1,16 @@
 package api;
 
+import config.WebDriverConfig;
 import models.Issue;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
+import org.aeonbits.owner.ConfigFactory;
 
-import static config.Config.config;
 import static io.restassured.RestAssured.given;
 
 public class ApiSteps {
+
+    final WebDriverConfig config = ConfigFactory.newInstance().create(WebDriverConfig.class);
 
     @Step("Создаем задачу с заданным заголовком")
     public Issue createIssue(String title, String body) {
@@ -18,7 +21,7 @@ public class ApiSteps {
         return given()
                 .filter(new AllureRestAssured())
                 .baseUri("https://api.github.com")
-                .header("Authorization", "token " + config().getToken())
+                .header("Authorization", "token " + config.token())
                 .body(toCreate)
                 .when()
                 .post("/repos/test-pikabu/test_repo/issues")
@@ -33,7 +36,7 @@ public class ApiSteps {
         return given()
                 .filter(new AllureRestAssured())
                 .baseUri("https://api.github.com")
-                .header("Authorization", "token " + config().getToken())
+                .header("Authorization", "token " + config.token())
                 .when()
                 .get("/repos/test-pikabu/test_repo/issues/" + number)
                 .then()

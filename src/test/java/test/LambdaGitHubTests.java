@@ -1,35 +1,44 @@
 package test;
 
 import api.ApiSteps;
-import models.Issue;
+import config.CustomWebDriverProvider;
+import config.WebDriverConfig;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import models.Issue;
+import org.aeonbits.owner.ConfigFactory;
+import org.junit.jupiter.api.*;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
+import static config.Config.config;
 import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
-import static config.Config.config;
 
 
 @Owner("KovalevStanislav")
 @Feature("Тесты GitHub с использованием лямбда функций")
 public class LambdaGitHubTests {
 
-    final static String
-            login = config().getLogin(),
-            password = config().getPassword(),
-            base_url = config().getLoginFormUrl(),
-            issues_link = config().getLoginFormUrl() + config().getRepository(),
-            title = config().getTitle(),
-            body = config().getBody();
+    final WebDriverConfig config = ConfigFactory.newInstance().create(WebDriverConfig.class);
+
+    final String
+            login = config.login(),
+            password = config.password(),
+            base_url = config.url(),
+            issues_link = config.url() + config.repository(),
+            title = config.title(),
+            body = config.body();
     private int number;
     private Issue issue = new Issue();
     private final ApiSteps api = new ApiSteps();
+
+
+    @BeforeEach
+    void start() {
+        CustomWebDriverProvider custom = new CustomWebDriverProvider();
+        custom.setupBrowser();
+    }
 
 
     @DisplayName("Создание Issue через UI без BasicSteps")
@@ -74,7 +83,7 @@ public class LambdaGitHubTests {
         step("Подтверждаем создание задачи", () -> {
             $(withText("Submit new issue")).click();
             number = Integer.parseInt($(".gh-header-title span", 1).getText().replace("#", ""));
-                });
+        });
 
         step("Загружаем созданную задачу через API", () -> {
             issue = api.getIssue(number);
@@ -82,9 +91,9 @@ public class LambdaGitHubTests {
 
         step("Проверяем корректность созданной задачи", () -> {
             Assertions.assertEquals(issue.getTitle(), title);
-            Assertions.assertEquals(issue.getAssignee().getLogin(),login);
-            Assertions.assertEquals(issue.getLabels().get(0).getName(),"bug");
-            Assertions.assertEquals(issue.getLabels().get(1).getName(),"invalid");
+            Assertions.assertEquals(issue.getAssignee().getLogin(), login);
+            Assertions.assertEquals(issue.getLabels().get(0).getName(), "bug");
+            Assertions.assertEquals(issue.getLabels().get(1).getName(), "invalid");
         });
     }
 
