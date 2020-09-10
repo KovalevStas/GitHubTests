@@ -21,6 +21,7 @@ class TestBase {
     public static void beforeAll() {
         addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
         Configuration.browser = CustomWebDriver.class.getName();
+        Configuration.headless = true;
     }
 
     @AfterEach
