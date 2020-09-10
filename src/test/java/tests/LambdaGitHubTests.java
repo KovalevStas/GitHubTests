@@ -1,21 +1,19 @@
 package tests;
 
 import api.ApiSteps;
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
-import config.CustomWebDriver;
 import config.WebDriverConfig;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
-import io.qameta.allure.Step;
 import models.Issue;
 import org.aeonbits.owner.ConfigFactory;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.*;
-import static helpers.AttachmentsHelper.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
 

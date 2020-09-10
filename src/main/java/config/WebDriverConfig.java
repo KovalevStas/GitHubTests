@@ -1,8 +1,8 @@
 package config;
 
 import org.aeonbits.owner.Config;
-import org.aeonbits.owner.Config.*;
-import java.net.URL;
+import org.aeonbits.owner.Config.LoadPolicy;
+import org.aeonbits.owner.Config.Sources;
 
 
 @LoadPolicy(org.aeonbits.owner.Config.LoadType.MERGE)
@@ -16,6 +16,10 @@ public interface WebDriverConfig extends Config {
     @Key("webdriver.browser.name")
     BrowserName browserName();
 
+    @DefaultValue("CHROME")
+    @Key("webdriver.browser.version")
+    String browserVersion();
+
     @DefaultValue("false")
     @Key("webdriver.remote")
     boolean remote();
@@ -28,9 +32,6 @@ public interface WebDriverConfig extends Config {
 
     @Key("password")
     String password();
-
-    @Key("token")
-    String token();
 
     @Key("title")
     String title();
