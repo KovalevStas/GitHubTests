@@ -44,4 +44,7 @@ public interface WebDriverConfig extends Config {
 
     @Key("url")
     String url();
+
+    @Key("video_storage_url")
+    String video_storage_url();
 }

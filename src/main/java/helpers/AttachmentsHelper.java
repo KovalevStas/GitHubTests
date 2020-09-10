@@ -1,6 +1,8 @@
 package helpers;
 
+import config.WebDriverConfig;
 import io.qameta.allure.Attachment;
+import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -40,8 +42,9 @@ public class AttachmentsHelper {
     }
 
     public static String getVideoUrl() {
+        final WebDriverConfig config = ConfigFactory.newInstance().create(WebDriverConfig.class);
         try {
-            return new URL(System.getProperty("video_storage_url") + getSessionId() + ".mp4") + "";
+            return new URL(config.video_storage_url() + getSessionId() + ".mp4") + "";
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
