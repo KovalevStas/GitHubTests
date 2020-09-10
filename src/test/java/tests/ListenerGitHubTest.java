@@ -1,8 +1,8 @@
-package test;
+package tests;
 
 import api.ApiSteps;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import config.CustomWebDriverProvider;
+import config.CustomWebDriver;
 import config.WebDriverConfig;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
@@ -19,7 +19,7 @@ import static io.qameta.allure.Allure.link;
 
 @Owner("KovalevStanislav")
 @Feature("Тесты GitHub на чистом Selenide и Rest API")
-public class ListenerGitHubTest {
+public class ListenerGitHubTest extends TestBase{
 
     final WebDriverConfig config = ConfigFactory.newInstance().create(WebDriverConfig.class);
     final String
@@ -32,19 +32,6 @@ public class ListenerGitHubTest {
     private int number;
     private Issue issue = new Issue();
     private final ApiSteps api = new ApiSteps();
-
-    @BeforeAll
-    static void initLogger() {
-        SelenideLogger.addListener("allure", new AllureSelenide()
-                .savePageSource(true)
-                .screenshots(true));
-    }
-
-    @BeforeEach
-    void start() {
-        CustomWebDriverProvider custom = new CustomWebDriverProvider();
-        custom.setupBrowser();
-    }
 
     @DisplayName("Создание Issue через без Steps")
     @Test
@@ -113,11 +100,6 @@ public class ListenerGitHubTest {
         Assertions.assertEquals(issue.getLabels().get(0).getName(), "bug");
         Assertions.assertEquals(issue.getLabels().get(1).getName(), "invalid");
 
-    }
-
-    @AfterEach
-    public void closeBrowser() {
-        closeWebDriver();
     }
 
 }

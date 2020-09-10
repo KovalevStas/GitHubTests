@@ -1,24 +1,28 @@
-package test;
+package tests;
 
 import api.ApiSteps;
-import config.CustomWebDriverProvider;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import config.CustomWebDriver;
 import config.WebDriverConfig;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import io.qameta.allure.Step;
 import models.Issue;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.*;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
-import static config.Config.config;
+import static helpers.AttachmentsHelper.*;
 import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
 
 
 @Owner("KovalevStanislav")
 @Feature("Тесты GitHub с использованием лямбда функций")
-public class LambdaGitHubTests {
+public class LambdaGitHubTests extends TestBase{
 
     final WebDriverConfig config = ConfigFactory.newInstance().create(WebDriverConfig.class);
 
@@ -32,13 +36,6 @@ public class LambdaGitHubTests {
     private int number;
     private Issue issue = new Issue();
     private final ApiSteps api = new ApiSteps();
-
-
-    @BeforeEach
-    void start() {
-        CustomWebDriverProvider custom = new CustomWebDriverProvider();
-        custom.setupBrowser();
-    }
 
 
     @DisplayName("Создание Issue через UI без BasicSteps")
@@ -55,6 +52,7 @@ public class LambdaGitHubTests {
             $(byText("Sign in")).click();
             $("#login_field").setValue(login);
             $("#password").setValue(password).pressEnter();
+            $(".container").waitUntil(visible,5000);
         });
 
         step("Открываем список Issue", () -> {
@@ -62,7 +60,7 @@ public class LambdaGitHubTests {
         });
 
         step("Создаем новую Issue", () -> {
-            $(by("data-hotkey", "c")).click();
+            $(by("data-hotkey", "c")).waitUntil(visible,3000).click();
             $("#issue_title").setValue(title);
             $("#issue_body").setValue(body);
         });
@@ -97,8 +95,4 @@ public class LambdaGitHubTests {
         });
     }
 
-    @AfterEach
-    public void closeBrowser() {
-        closeWebDriver();
-    }
 }
