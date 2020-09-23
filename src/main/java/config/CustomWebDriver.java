@@ -1,5 +1,6 @@
 package config;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverProvider;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.aeonbits.owner.ConfigFactory;
@@ -43,6 +44,7 @@ public class CustomWebDriver implements WebDriverProvider {
                 capabilities.setBrowserName(String.valueOf(CHROME));
                 capabilities.setCapability(ChromeOptions.CAPABILITY, getChromeOptions());
                 WebDriverManager.chromedriver().setup();
+                Configuration.headless = true;
                 return new ChromeDriver(capabilities);
             } else {
                 if (FIREFOX.equals(config.browserName())) {
@@ -64,7 +66,6 @@ public class CustomWebDriver implements WebDriverProvider {
         chromeOptions.addArguments("--disable-notifications");
         chromeOptions.addArguments("--disable-infobars");
         chromeOptions.addArguments("--lang=ru");
-
         return chromeOptions;
     }
 
